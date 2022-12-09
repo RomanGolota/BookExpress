@@ -2,7 +2,7 @@ import express from 'express'
 import path from 'path';
 import { engine } from 'express-handlebars';
 import { fileURLToPath } from 'url';
-import getFortune from "./lib/fortune.js";
+import routes from "./lib/handlers.js";
 
 const PORT = process.env.PORT || 3000
 const app = express()
@@ -17,24 +17,11 @@ app.set('views', './views');
 
 app.use(express.static(__dirname + '/public'))
 
-app.get('/', (req, res) => {
-    res.render('home')
-})
+app.get('/', routes.home)
+app.get('/about', routes.about)
 
-app.get('/about', (req, res) => {
-    res.render('about', { fortune: getFortune })
-})
-
-app.use((req, res) => {
-    res.status(404)
-    res.render('404')
-})
-
-app.use((err, req, res, next) => {
-    console.error(err.message)
-    res.status(500)
-    res.render('500')
-})
+app.use(routes.notFound)
+app.use(routes.serverError)
 
 app.listen(PORT, () => {
     console.log(`Server started at port: ${PORT}`)
