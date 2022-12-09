@@ -3,9 +3,12 @@ import path from 'path';
 import { engine } from 'express-handlebars';
 import { fileURLToPath } from 'url';
 import routes from "./lib/handlers.js";
+import * as dotenv from 'dotenv'
+dotenv.config()
 
-const PORT = process.env.PORT || 3000
-const app = express()
+// eslint-disable-next-line
+const PORT = process.env.PORT ?? 3000
+export const app = express()
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -23,6 +26,6 @@ app.get('/about', routes.about)
 app.use(routes.notFound)
 app.use(routes.serverError)
 
-app.listen(PORT, () => {
+ app.listen(PORT, () => {
     console.log(`Server started at port: ${PORT}`)
 })
