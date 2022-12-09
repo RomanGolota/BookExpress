@@ -8,7 +8,7 @@ dotenv.config()
 
 // eslint-disable-next-line
 const PORT = process.env.PORT ?? 3000
-export const app = express()
+const app = express()
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -26,6 +26,14 @@ app.get('/about', routes.about)
 app.use(routes.notFound)
 app.use(routes.serverError)
 
- app.listen(PORT, () => {
-    console.log(`Server started at port: ${PORT}`)
-})
+const appStart = async () => {
+    try {
+        await app.listen(PORT, () => {
+            console.log(`Server started at port: ${PORT}`)
+        })
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+appStart()
