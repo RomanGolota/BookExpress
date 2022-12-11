@@ -13,15 +13,28 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.engine('handlebars', engine({
-    defaultLayout: 'main'
+    defaultLayout: 'main',
+    helpers: {
+        section: function(name, options) {
+            if(!this._sections) this._sections = {}
+            this._sections[name] = options.fn(this)
+            return null
+        }
+    }
 }));
 app.set('view engine', 'handlebars');
 app.set('views', './views');
 
 app.use(express.static(__dirname + '/public'))
+app.disable('x-powered-by')
 
 app.get('/', routes.home)
 app.get('/about', routes.about)
+app.get('/headers', (req, res) => { res.type('text/plain')
+    const headers = Object.entries(req.headers)
+        .map(([key, value]) => `${key}: ${value}`)
+    res.send(headers.join('\n'))
+})
 
 app.use(routes.notFound)
 app.use(routes.serverError)
